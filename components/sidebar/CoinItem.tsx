@@ -32,7 +32,7 @@ function CoinItem({ coin }: IProps) {
     <div
       className={[
         "flex items-center justify-between gap-2 py-2 px-5 hover:bg-yellow-900 transition-all duration-800 hover:cursor-pointer",
-        selectedMarketData?.symbol === coin.symbol ? "bg-yellow-600" : "",
+        selectedMarketData?.symbol === coin.symbol ? "bg-yellow-900" : "",
       ].join(" ")}
       onClick={() => handleClick()}
     >
