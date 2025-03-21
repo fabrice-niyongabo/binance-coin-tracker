@@ -1,0 +1,64 @@
+import { splitSymbol } from "@/lib/utils";
+import { IMarketData } from "@/types/market";
+import {
+  binanceCryptoIcons,
+  binanceEtfIcons,
+  binanceCurrencyIcons,
+} from "binance-icons";
+import Image from "next/image";
+
+interface IProps {
+  coin: IMarketData;
+}
+
+function CoinItem({ coin }: IProps) {
+  const { base, quote } = splitSymbol(coin.symbol);
+  return (
+    <div className="flex items-center justify-between gap-2 p-2">
+      <div>
+        {binanceCryptoIcons.has(base.toLowerCase()) ? (
+          <Image
+            src={
+              "https://raw.githubusercontent.com/VadimMalykhin/binance-icons/main/crypto/" +
+              base.toLowerCase() +
+              ".svg"
+            }
+            alt={base}
+            width={20}
+            height={20}
+          />
+        ) : binanceCurrencyIcons.has(base.toLowerCase()) ? (
+          <Image
+            src={
+              "https://raw.githubusercontent.com/VadimMalykhin/binance-icons/main/currency/" +
+              base.toLowerCase() +
+              ".svg"
+            }
+            alt={base}
+            width={20}
+            height={20}
+          />
+        ) : binanceEtfIcons.has(base.toLowerCase()) ? (
+          <Image
+            src={
+              "https://raw.githubusercontent.com/VadimMalykhin/binance-icons/main/etf/" +
+              base.toLowerCase() +
+              ".svg"
+            }
+            alt={base}
+            width={20}
+            height={20}
+          />
+        ) : (
+          <div style={{ width: 20, height: 20 }}></div>
+        )}
+      </div>
+      <p className="text-white text-sm flex-1">
+        {base}/{quote}
+      </p>
+      <p className="text-gray-500">{coin.lastPrice}</p>
+    </div>
+  );
+}
+
+export default CoinItem;
