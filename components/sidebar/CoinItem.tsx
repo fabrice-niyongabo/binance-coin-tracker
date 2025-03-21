@@ -14,7 +14,7 @@ interface IProps {
 function CoinItem({ coin }: IProps) {
   const { base, quote } = splitSymbol(coin.symbol);
   return (
-    <div className="flex items-center justify-between gap-2 p-2">
+    <div className="flex items-center justify-between gap-2 py-2 px-5">
       <div>
         {binanceCryptoIcons.has(base.toLowerCase()) ? (
           <Image
@@ -50,7 +50,15 @@ function CoinItem({ coin }: IProps) {
             height={20}
           />
         ) : (
-          <div style={{ width: 20, height: 20 }}></div>
+          <div
+            style={{ width: 20, height: 20 }}
+            className="flex items-center justify-center rounded-full border border-gray-50"
+          >
+            <span className="text-white" style={{ fontSize: 10 }}>
+              {base.charAt(0)}
+              {quote.charAt(0)}
+            </span>
+          </div>
         )}
       </div>
       <p className="text-white text-sm flex-1">
