@@ -14,12 +14,27 @@ interface IProps {
 
 function CoinItem({ coin }: IProps) {
   const { base, quote } = splitSymbol(coin.symbol);
-  const { setSelectedMarketData } = useAppContext();
+  const { setSelectedMarketData, selectedMarketData } = useAppContext();
+
+  const handleClick = () => {
+    setSelectedMarketData(coin);
+    setTimeout(() => {
+      window.open(
+        `https://www.binance.com/en/trade/${splitSymbol(coin.symbol).base}_${
+          splitSymbol(coin.symbol).quote
+        }?_from=markets&type=spot`,
+        "_blank"
+      );
+    }, 1000);
+  };
 
   return (
     <div
-      className="flex items-center justify-between gap-2 py-2 px-5"
-      onClick={() => setSelectedMarketData(coin)}
+      className={[
+        "flex items-center justify-between gap-2 py-2 px-5 hover:bg-yellow-900 transition-all duration-800 hover:cursor-pointer",
+        selectedMarketData?.symbol === coin.symbol ? "bg-yellow-600" : "",
+      ].join(" ")}
+      onClick={() => handleClick()}
     >
       <div>
         {binanceCryptoIcons.has(base.toLowerCase()) ? (
