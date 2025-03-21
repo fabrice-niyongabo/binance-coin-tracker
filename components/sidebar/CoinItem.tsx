@@ -1,3 +1,4 @@
+import { useAppContext } from "@/context";
 import { splitSymbol } from "@/lib/utils";
 import { IMarketData } from "@/types/market";
 import {
@@ -13,8 +14,13 @@ interface IProps {
 
 function CoinItem({ coin }: IProps) {
   const { base, quote } = splitSymbol(coin.symbol);
+  const { setSelectedMarketData } = useAppContext();
+
   return (
-    <div className="flex items-center justify-between gap-2 py-2 px-5">
+    <div
+      className="flex items-center justify-between gap-2 py-2 px-5"
+      onClick={() => setSelectedMarketData(coin)}
+    >
       <div>
         {binanceCryptoIcons.has(base.toLowerCase()) ? (
           <Image
