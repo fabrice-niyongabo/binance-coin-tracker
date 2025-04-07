@@ -5,7 +5,7 @@ import { IMarketData, ISpotMarketData } from "@/types/market";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CoinList from "./CoinList";
-import Paginator from "../paginator";
+import Paginator from "../../paginator";
 import { splitSymbol } from "@/lib/utils";
 
 function SideBar() {
@@ -68,7 +68,7 @@ function SideBar() {
         <div className="px-5 py-2">
           <input
             type="text"
-            placeholder="Search coin..."
+            placeholder="Search spot market..."
             value={keyword}
             onChange={(e) => setKeword(e.target.value)}
             className="w-full bg-gray-800 rounded-lg border border-gray-700 focus:border-gray-500 focus:outline-none p-2 text-xs placeholder:text-gray-400 text-white"

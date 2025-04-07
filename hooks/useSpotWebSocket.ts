@@ -7,7 +7,7 @@ export function useWebSocket() {
   const [status, setStatus] = useState("Connecting...");
   const [prices, setPrices] = useState<Record<string, IPriceData>>({});
 
-  const { spotMarketData, setSpotMarketPrices } = useAppContext();
+  const { spotMarketData } = useAppContext();
 
   useEffect(() => {
     const symbols = spotMarketData.map((s) => s.symbol.toLowerCase());
@@ -68,10 +68,6 @@ export function useWebSocket() {
       }
     };
   }, [spotMarketData]);
-
-  useEffect(() => {
-    setSpotMarketPrices(prices);
-  }, [prices]);
 
   return { prices, status };
 }

@@ -1,8 +1,8 @@
-import Navigator from "@/components/spot/navigator";
-import SideBar from "@/components/spot/sidebar";
+import Navigator from "@/components/future/navigator";
+import SideBar from "@/components/future/sidebar";
 import { AppContextProvider } from "@/context";
 
-export default function Home() {
+function Futures() {
   return (
     <AppContextProvider>
       <SideBar />
@@ -12,3 +12,5 @@ export default function Home() {
     </AppContextProvider>
   );
 }
+
+export default Futures;
