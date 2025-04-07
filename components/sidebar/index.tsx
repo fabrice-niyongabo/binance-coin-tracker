@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppContext } from "@/context";
-import { IMarketData } from "@/types/market";
+import { IMarketData, ISpotMarketData } from "@/types/market";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CoinList from "./CoinList";
@@ -9,33 +9,40 @@ import Paginator from "../paginator";
 import { splitSymbol } from "@/lib/utils";
 
 function SideBar() {
-  const { marketData, setMarketData } = useAppContext();
+  const { spotMarketData, setSpotMarketData } = useAppContext();
 
   const [keyword, setKeword] = useState("");
-  const [searchResults, setSearchResults] = useState<IMarketData[]>([]);
+  const [searchResults, setSearchResults] = useState<ISpotMarketData[]>([]);
 
   //pagination
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [itemOffset, setItemOffset] = useState(0);
 
   const endOffset = itemOffset + itemsPerPage;
-  const itemsToShow = marketData.slice(
-    itemOffset > marketData.length ? 0 : itemOffset,
+  const itemsToShow = spotMarketData.slice(
+    itemOffset > spotMarketData.length ? 0 : itemOffset,
     endOffset
   );
-  const pageCount = Math.ceil(marketData.length / itemsPerPage);
+  const pageCount = Math.ceil(spotMarketData.length / itemsPerPage);
   const fetchMartetData = async () => {
     try {
       const response = await axios.get(
-        "https://api.binance.com/api/v3/ticker/24hr"
+        // "https://api.binance.com/api/v3/ticker/24hr"
+        "https://api.binance.com/api/v3/exchangeInfo"
       );
-      const marketData = response.data as IMarketData[];
+      const marketData: ISpotMarketData[] =
+        response.data.symbols || ([] as ISpotMarketData[]);
 
       const filterData = marketData
-        .sort((a, b) => Number(b.quoteVolume) - Number(a.quoteVolume))
-        .filter((item) => splitSymbol(item.symbol).quote === "USDT");
+        // .sort((a, b) => Number(b.quoteVolume) - Number(a.quoteVolume))
+        .filter(
+          (item) => item.status === "TRADING" && item.quoteAsset === "USDT"
+        )
+        .sort((a, b) =>
+          a.baseAsset.toLowerCase().localeCompare(b.baseAsset.toLowerCase())
+        );
 
-      setMarketData(filterData);
+      setSpotMarketData(filterData);
       setSearchResults(filterData);
     } catch (error) {
       console.error(error);
@@ -47,16 +54,14 @@ function SideBar() {
 
   useEffect(() => {
     if (keyword) {
-      const searchResults = marketData.filter((item) =>
-        splitSymbol(item.symbol)
-          .base.toLowerCase()
-          .includes(keyword.toLowerCase())
+      const searchResults = spotMarketData.filter((item) =>
+        item.baseAsset.toLowerCase().includes(keyword.toLowerCase())
       );
       setSearchResults(searchResults);
     } else {
-      setSearchResults(marketData);
+      setSearchResults(spotMarketData);
     }
-  }, [keyword, marketData]);
+  }, [keyword, spotMarketData]);
   return (
     <div className="fixed left-0 bg-gray-900 h-screen w-80">
       <div className="h-full flex flex-col justify-between gap-3">

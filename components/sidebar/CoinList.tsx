@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Paginator from "../paginator";
-import { IMarketData } from "@/types/market";
+import { IMarketData, ISpotMarketData } from "@/types/market";
 import CoinItem from "./CoinItem";
 
 interface IProps {
-  marketData: IMarketData[];
+  marketData: ISpotMarketData[];
 }
 
 function CoinList(props: IProps) {

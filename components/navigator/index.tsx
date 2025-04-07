@@ -13,24 +13,24 @@ import { FaSadTear } from "react-icons/fa";
 import { useState } from "react";
 
 function Navigator() {
-  const { selectedMarketData, setSelectedMarketData, marketData } =
+  const { selectedSpotMarketData, setSelectedSpotMarketData, spotMarketData } =
     useAppContext();
 
   const [nextLoading, setNextLoading] = useState(false);
   const [previousLoading, setPreviousLoading] = useState(false);
 
   const handleNext = () => {
-    if (selectedMarketData) {
+    if (selectedSpotMarketData) {
       setNextLoading(true);
-      const currentIndex = marketData.findIndex(
-        (item) => item.symbol === selectedMarketData.symbol
+      const currentIndex = spotMarketData.findIndex(
+        (item) => item.symbol === selectedSpotMarketData.symbol
       );
-      const nextCoin = marketData[currentIndex + 1];
+      const nextCoin = spotMarketData[currentIndex + 1];
       if (!nextCoin) {
         setNextLoading(false);
         return;
       }
-      setSelectedMarketData(nextCoin);
+      setSelectedSpotMarketData(nextCoin);
       setTimeout(() => {
         window.open(
           `https://www.binance.com/en/trade/${
@@ -39,22 +39,22 @@ function Navigator() {
           "_blank"
         );
         setNextLoading(false);
-      }, 1000);
+      }, 200);
     }
   };
 
   const handlePrevious = () => {
-    if (selectedMarketData) {
+    if (selectedSpotMarketData) {
       setPreviousLoading(true);
-      const currentIndex = marketData.findIndex(
-        (item) => item.symbol === selectedMarketData.symbol
+      const currentIndex = spotMarketData.findIndex(
+        (item) => item.symbol === selectedSpotMarketData.symbol
       );
-      const previousCoin = marketData[currentIndex - 1];
+      const previousCoin = spotMarketData[currentIndex - 1];
       if (!previousCoin) {
         setPreviousLoading(false);
         return;
       }
-      setSelectedMarketData(previousCoin);
+      setSelectedSpotMarketData(previousCoin);
       setTimeout(() => {
         window.open(
           `https://www.binance.com/en/trade/${
@@ -63,12 +63,12 @@ function Navigator() {
           "_blank"
         );
         setPreviousLoading(false);
-      }, 1000);
+      }, 200);
     }
   };
   return (
     <div className="h-full flex items-center justify-center">
-      {!selectedMarketData ? (
+      {!selectedSpotMarketData ? (
         <div className="flex items-center justify-center gap-3 flex-col">
           <FaSadTear className="text-6xl text-red-500 opacity-50" />
           <span className=" text-2xl text-red-500">No coin selected</span>
@@ -77,7 +77,7 @@ function Navigator() {
         <div className="flex gap-10 items-center justify-center">
           <button
             disabled={
-              selectedMarketData.symbol === marketData[0].symbol ||
+              selectedSpotMarketData.symbol === spotMarketData[0].symbol ||
               previousLoading
             }
             className="bg-gray-900 rounded-full p-10 flex items-center justify-center hover:bg-yellow-500 transition-all duration-800 hover:cursor-pointer shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
@@ -110,41 +110,47 @@ function Navigator() {
           <div className="bg-gray-900 rounded-full p-10 flex items-center justify-center min-w-80 gap-2 shadow-md">
             <div>
               {binanceCryptoIcons.has(
-                splitSymbol(selectedMarketData.symbol).base.toLowerCase()
+                splitSymbol(selectedSpotMarketData.symbol).base.toLowerCase()
               ) ? (
                 <Image
                   src={
                     "https://raw.githubusercontent.com/VadimMalykhin/binance-icons/main/crypto/" +
-                    splitSymbol(selectedMarketData.symbol).base.toLowerCase() +
+                    splitSymbol(
+                      selectedSpotMarketData.symbol
+                    ).base.toLowerCase() +
                     ".svg"
                   }
-                  alt={splitSymbol(selectedMarketData.symbol).base}
+                  alt={splitSymbol(selectedSpotMarketData.symbol).base}
                   width={80}
                   height={80}
                 />
               ) : binanceCurrencyIcons.has(
-                  splitSymbol(selectedMarketData.symbol).base.toLowerCase()
+                  splitSymbol(selectedSpotMarketData.symbol).base.toLowerCase()
                 ) ? (
                 <Image
                   src={
                     "https://raw.githubusercontent.com/VadimMalykhin/binance-icons/main/currency/" +
-                    splitSymbol(selectedMarketData.symbol).base.toLowerCase() +
+                    splitSymbol(
+                      selectedSpotMarketData.symbol
+                    ).base.toLowerCase() +
                     ".svg"
                   }
-                  alt={splitSymbol(selectedMarketData.symbol).base}
+                  alt={splitSymbol(selectedSpotMarketData.symbol).base}
                   width={80}
                   height={80}
                 />
               ) : binanceEtfIcons.has(
-                  splitSymbol(selectedMarketData.symbol).base.toLowerCase()
+                  splitSymbol(selectedSpotMarketData.symbol).base.toLowerCase()
                 ) ? (
                 <Image
                   src={
                     "https://raw.githubusercontent.com/VadimMalykhin/binance-icons/main/etf/" +
-                    splitSymbol(selectedMarketData.symbol).base.toLowerCase() +
+                    splitSymbol(
+                      selectedSpotMarketData.symbol
+                    ).base.toLowerCase() +
                     ".svg"
                   }
-                  alt={splitSymbol(selectedMarketData.symbol).base}
+                  alt={splitSymbol(selectedSpotMarketData.symbol).base}
                   width={80}
                   height={80}
                 />
@@ -154,26 +160,24 @@ function Navigator() {
                   className="flex items-center justify-center rounded-full border border-gray-50"
                 >
                   <span className="text-white" style={{ fontSize: 10 }}>
-                    {splitSymbol(selectedMarketData.symbol).base.charAt(0)}
-                    {splitSymbol(selectedMarketData.symbol).base.charAt(0)}
+                    {splitSymbol(selectedSpotMarketData.symbol).base.charAt(0)}
+                    {splitSymbol(selectedSpotMarketData.symbol).base.charAt(0)}
                   </span>
                 </div>
               )}
             </div>
             <div>
               <div className="text-2xl text-white">
-                {splitSymbol(selectedMarketData.symbol).base}/
-                {splitSymbol(selectedMarketData.symbol).quote}
+                {splitSymbol(selectedSpotMarketData.symbol).base}/
+                {splitSymbol(selectedSpotMarketData.symbol).quote}
               </div>
-              <div className="text-2xl text-yellow-500">
-                {selectedMarketData.lastPrice}
-              </div>
+              <div className="text-2xl text-yellow-500">{0}</div>
             </div>
           </div>
           <button
             disabled={
-              selectedMarketData.symbol ===
-                marketData[marketData.length - 1].symbol || nextLoading
+              selectedSpotMarketData.symbol ===
+                spotMarketData[spotMarketData.length - 1].symbol || nextLoading
             }
             className="bg-gray-900 rounded-full p-10 flex items-center justify-center hover:bg-yellow-500 transition-all duration-800 hover:cursor-pointer shadow-md disabled:opacity-30 disabled:cursor-not-allowed"
             onClick={handleNext}
