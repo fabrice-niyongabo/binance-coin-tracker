@@ -1,6 +1,6 @@
 "use client";
 
-import { IMarketData, ISpotMarketData } from "@/types/market";
+import { IMarketData, IPriceData, ISpotMarketData } from "@/types/market";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface ContextProps {
@@ -10,6 +10,8 @@ interface ContextProps {
   setSelectedSpotMarketData: (
     selectedMarketData: ISpotMarketData | undefined
   ) => void;
+  spotMarketPrices: Record<string, IPriceData>;
+  setSpotMarketPrices: (prices: Record<string, IPriceData>) => void;
 }
 
 const AppContext = createContext<ContextProps | undefined>(undefined);
@@ -19,6 +21,10 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [selectedSpotMarketData, setSelectedSpotMarketData] = useState<
     ISpotMarketData | undefined
   >(undefined);
+  const [spotMarketPrices, setSpotMarketPrices] = useState<
+    Record<string, IPriceData>
+  >({});
+
   return (
     <AppContext.Provider
       value={{
@@ -26,6 +32,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         setSpotMarketData,
         selectedSpotMarketData,
         setSelectedSpotMarketData,
+        setSpotMarketPrices,
+        spotMarketPrices,
       }}
     >
       {children}

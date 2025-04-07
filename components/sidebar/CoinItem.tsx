@@ -13,7 +13,11 @@ interface IProps {
 }
 
 function CoinItem({ coin }: IProps) {
-  const { setSelectedSpotMarketData, selectedSpotMarketData } = useAppContext();
+  const {
+    setSelectedSpotMarketData,
+    selectedSpotMarketData,
+    spotMarketPrices,
+  } = useAppContext();
 
   const handleClick = () => {
     setSelectedSpotMarketData(coin);
@@ -82,7 +86,22 @@ function CoinItem({ coin }: IProps) {
       <p className="text-white text-sm flex-1">
         {coin.baseAsset}/{coin.quoteAsset}
       </p>
-      <p className="text-gray-500">{0}</p>
+      <p
+        className={[
+          "text-gray-500",
+          spotMarketPrices[coin.symbol]?.direction === "up"
+            ? "text-green-500"
+            : "",
+          spotMarketPrices[coin.symbol]?.direction === "down"
+            ? "text-red-500"
+            : "",
+          spotMarketPrices[coin.symbol]?.direction === "none"
+            ? "text-red-400"
+            : "",
+        ].join(" ")}
+      >
+        {spotMarketPrices[coin.symbol]?.price || 0}
+      </p>
     </div>
   );
 }

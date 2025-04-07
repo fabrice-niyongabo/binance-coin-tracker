@@ -13,8 +13,12 @@ import { FaSadTear } from "react-icons/fa";
 import { useState } from "react";
 
 function Navigator() {
-  const { selectedSpotMarketData, setSelectedSpotMarketData, spotMarketData } =
-    useAppContext();
+  const {
+    selectedSpotMarketData,
+    setSelectedSpotMarketData,
+    spotMarketData,
+    spotMarketPrices,
+  } = useAppContext();
 
   const [nextLoading, setNextLoading] = useState(false);
   const [previousLoading, setPreviousLoading] = useState(false);
@@ -160,18 +164,36 @@ function Navigator() {
                   className="flex items-center justify-center rounded-full border border-gray-50"
                 >
                   <span className="text-white" style={{ fontSize: 10 }}>
-                    {splitSymbol(selectedSpotMarketData.symbol).base.charAt(0)}
-                    {splitSymbol(selectedSpotMarketData.symbol).base.charAt(0)}
+                    {selectedSpotMarketData.baseAsset.charAt(0)}
+                    {selectedSpotMarketData.quoteAsset.charAt(0)}
                   </span>
                 </div>
               )}
             </div>
             <div>
               <div className="text-2xl text-white">
-                {splitSymbol(selectedSpotMarketData.symbol).base}/
-                {splitSymbol(selectedSpotMarketData.symbol).quote}
+                {selectedSpotMarketData.baseAsset}/
+                {selectedSpotMarketData.quoteAsset}
               </div>
-              <div className="text-2xl text-yellow-500">{0}</div>
+              <div
+                className={[
+                  "text-2xl text-yellow-500",
+                  spotMarketPrices[selectedSpotMarketData.symbol]?.direction ===
+                  "up"
+                    ? "text-green-500"
+                    : "",
+                  spotMarketPrices[selectedSpotMarketData.symbol]?.direction ===
+                  "down"
+                    ? "text-red-500"
+                    : "",
+                  spotMarketPrices[selectedSpotMarketData.symbol]?.direction ===
+                  "none"
+                    ? "text-red-400"
+                    : "",
+                ].join(" ")}
+              >
+                {spotMarketPrices[selectedSpotMarketData.symbol]?.price || 0}
+              </div>
             </div>
           </div>
           <button

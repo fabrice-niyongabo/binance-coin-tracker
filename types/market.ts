@@ -41,3 +41,10 @@ export interface ISpotMarketData {
   isSpotTradingAllowed: boolean;
   isMarginTradingAllowed: boolean;
 }
+
+export interface IPriceData {
+  symbol: string;
+  price: string;
+  direction: "up" | "down" | "none";
+  lastUpdated: number;
+}
