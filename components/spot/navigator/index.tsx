@@ -9,8 +9,8 @@ import {
   binanceCurrencyIcons,
 } from "binance-icons";
 import Image from "next/image";
-import { FaSadTear } from "react-icons/fa";
 import { useState } from "react";
+import { PiEmptyBold } from "react-icons/pi";
 
 function Navigator() {
   const {
@@ -74,7 +74,7 @@ function Navigator() {
     <div className="h-full flex items-center justify-center">
       {!selectedSpotMarketData ? (
         <div className="flex items-center justify-center gap-3 flex-col">
-          <FaSadTear className="text-6xl text-red-500 opacity-50" />
+          <PiEmptyBold className="text-6xl text-red-500 opacity-50" />
           <span className=" text-2xl text-red-500">No coin selected</span>
         </div>
       ) : (
