@@ -44,8 +44,8 @@ function CoinItem({ coin, priceData, isSelected }: IProps) {
               ".svg"
             }
             alt={coin.baseAsset}
-            width={20}
-            height={20}
+            width={25}
+            height={25}
           />
         ) : binanceCurrencyIcons.has(coin.baseAsset.toLowerCase()) ? (
           <Image
@@ -55,8 +55,8 @@ function CoinItem({ coin, priceData, isSelected }: IProps) {
               ".svg"
             }
             alt={coin.baseAsset}
-            width={20}
-            height={20}
+            width={25}
+            height={25}
           />
         ) : binanceEtfIcons.has(coin.baseAsset.toLowerCase()) ? (
           <Image
@@ -66,12 +66,12 @@ function CoinItem({ coin, priceData, isSelected }: IProps) {
               ".svg"
             }
             alt={coin.baseAsset}
-            width={20}
-            height={20}
+            width={25}
+            height={25}
           />
         ) : (
           <div
-            style={{ width: 20, height: 20 }}
+            style={{ width: 25, height: 25 }}
             className="flex items-center justify-center rounded-full border border-gray-50"
           >
             <span className="text-white" style={{ fontSize: 10 }}>
@@ -81,30 +81,30 @@ function CoinItem({ coin, priceData, isSelected }: IProps) {
           </div>
         )}
       </div>
-      <p className="text-white text-sm flex-1">
+      <p className="text-white text-lg font-semibold flex-1">
         {coin.baseAsset}/{coin.quoteAsset}
       </p>
       <div className="flex flex-col items-end">
         <p
-            className={[
-            "text-gray-500",
-            priceData?.direction === "up"
-                ? "text-green-500"
-                : "",
-            priceData?.direction === "down"
-                ? "text-red-500"
-                : "",
-            priceData?.direction === "none"
-                ? "text-red-400"
-                : "",
-            ].join(" ")}
+          className={[
+            "text-gray-500 font-semibold",
+            priceData?.direction === "up" ? "text-green-500" : "",
+            priceData?.direction === "down" ? "text-red-500" : "",
+            priceData?.direction === "none" ? "text-red-400" : "",
+          ].join(" ")}
         >
-            {priceData?.price || 0}
+          {priceData?.price || 0}
         </p>
         {priceData?.priceChangePercent && (
-            <p className={`text-[10px] ${parseFloat(priceData.priceChangePercent) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                {parseFloat(priceData.priceChangePercent).toFixed(2)}%
-            </p>
+          <p
+            className={`text-sm ${
+              parseFloat(priceData.priceChangePercent) >= 0
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+          >
+            {parseFloat(priceData.priceChangePercent).toFixed(2)}%
+          </p>
         )}
       </div>
     </div>
