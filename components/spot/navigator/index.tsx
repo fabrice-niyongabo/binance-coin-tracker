@@ -9,7 +9,7 @@ import {
   binanceCurrencyIcons,
 } from "binance-icons";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PiEmptyBold } from "react-icons/pi";
 
 function Navigator() {
@@ -18,18 +18,43 @@ function Navigator() {
     setSelectedSpotMarketData,
     spotMarketData,
     spotMarketPrices,
+    spotMarketBasePrices,
   } = useAppContext();
 
   const [nextLoading, setNextLoading] = useState(false);
   const [previousLoading, setPreviousLoading] = useState(false);
 
+  const [sortBy, setSortBy] = useState<"name" | "gainer">("gainer");
+
+  const sortedData = useMemo(() => {
+    const data = [...spotMarketData];
+    if (sortBy === "name") {
+      return data.sort((a, b) => a.baseAsset.localeCompare(b.baseAsset));
+    } else {
+      return data.sort((a, b) => {
+        const priceA = spotMarketBasePrices[a.symbol]?.priceChangePercent;
+        const priceB = spotMarketBasePrices[b.symbol]?.priceChangePercent;
+
+        const valA = priceA ? parseFloat(priceA) : -Infinity;
+        const valB = priceB ? parseFloat(priceB) : -Infinity;
+
+        return valB - valA;
+      });
+    }
+    // }, [props.marketData, prices, sortBy]);
+  }, [spotMarketData, spotMarketBasePrices, sortBy]);
+
   const handleNext = () => {
     if (selectedSpotMarketData) {
       setNextLoading(true);
-      const currentIndex = spotMarketData.findIndex(
+      // const currentIndex = spotMarketData.findIndex(
+      //   (item) => item.symbol === selectedSpotMarketData.symbol
+      // );
+      const currentIndex = sortedData.findIndex(
         (item) => item.symbol === selectedSpotMarketData.symbol
       );
-      const nextCoin = spotMarketData[currentIndex + 1];
+      // const nextCoin = spotMarketData[currentIndex + 1];
+      const nextCoin = sortedData[currentIndex + 1];
       if (!nextCoin) {
         setNextLoading(false);
         return;
@@ -50,10 +75,14 @@ function Navigator() {
   const handlePrevious = () => {
     if (selectedSpotMarketData) {
       setPreviousLoading(true);
-      const currentIndex = spotMarketData.findIndex(
+      // const currentIndex = spotMarketData.findIndex(
+      //   (item) => item.symbol === selectedSpotMarketData.symbol
+      // );
+      const currentIndex = sortedData.findIndex(
         (item) => item.symbol === selectedSpotMarketData.symbol
       );
-      const previousCoin = spotMarketData[currentIndex - 1];
+      // const previousCoin = spotMarketData[currentIndex - 1];
+      const previousCoin = sortedData[currentIndex - 1];
       if (!previousCoin) {
         setPreviousLoading(false);
         return;

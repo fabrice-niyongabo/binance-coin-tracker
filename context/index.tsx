@@ -14,6 +14,8 @@ interface ContextProps {
   ) => void;
   spotMarketPrices: Record<string, IPriceData>;
   setSpotMarketPrices: (prices: Record<string, IPriceData>) => void;
+  spotMarketBasePrices: Record<string, IPriceData>;
+  setSpotMarketBasePrices: (prices: Record<string, IPriceData>) => void;
   futureMarketPrices: Record<string, IPriceData>;
   setFutureMarketPrices: (prices: Record<string, IPriceData>) => void;
   selectedFutureMarketData: ISpotMarketData | undefined;
@@ -30,6 +32,9 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     ISpotMarketData | undefined
   >(undefined);
   const [spotMarketPrices, setSpotMarketPrices] = useState<
+    Record<string, IPriceData>
+  >({});
+  const [spotMarketBasePrices, setSpotMarketBasePrices] = useState<
     Record<string, IPriceData>
   >({});
 
@@ -58,6 +63,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         setSelectedFutureMarketData,
         setFutureMarketPrices,
         futureMarketPrices,
+        setSpotMarketBasePrices,
+        spotMarketBasePrices,
       }}
     >
       {children}

@@ -11,7 +11,7 @@ interface IProps {
 function CoinList(props: IProps) {
   // socket
   const { prices } = useWebSocket();
-  const { selectedSpotMarketData } = useAppContext();
+  const { selectedSpotMarketData, spotMarketBasePrices } = useAppContext();
 
   const [sortBy, setSortBy] = useState<"name" | "gainer">("gainer");
 
@@ -21,8 +21,8 @@ function CoinList(props: IProps) {
       return data.sort((a, b) => a.baseAsset.localeCompare(b.baseAsset));
     } else {
       return data.sort((a, b) => {
-        const priceA = prices[a.symbol]?.priceChangePercent;
-        const priceB = prices[b.symbol]?.priceChangePercent;
+        const priceA = spotMarketBasePrices[a.symbol]?.priceChangePercent;
+        const priceB = spotMarketBasePrices[b.symbol]?.priceChangePercent;
 
         const valA = priceA ? parseFloat(priceA) : -Infinity;
         const valB = priceB ? parseFloat(priceB) : -Infinity;
@@ -30,7 +30,8 @@ function CoinList(props: IProps) {
         return valB - valA;
       });
     }
-  }, [props.marketData, prices, sortBy]);
+    // }, [props.marketData, prices, sortBy]);
+  }, [props.marketData, spotMarketBasePrices, sortBy]);
 
   return (
     <div className="flex flex-col gap-3">
