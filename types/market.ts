@@ -45,6 +45,7 @@ export interface ISpotMarketData {
 export interface IPriceData {
   symbol: string;
   price: string;
+  priceChangePercent: string;
   direction: "up" | "down" | "none";
   lastUpdated: number;
 }

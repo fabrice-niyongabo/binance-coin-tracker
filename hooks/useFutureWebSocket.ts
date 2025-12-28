@@ -1,21 +1,25 @@
 "use client";
 import { useAppContext } from "@/context";
 import { IPriceData } from "@/types/market";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function useFutureWebSocket() {
   const [status, setStatus] = useState("Connecting...");
   const [prices, setPrices] = useState<Record<string, IPriceData>>({});
 
-  const { spotMarketData, setSpotMarketPrices } = useAppContext();
+  const { futureMarketData, setFutureMarketPrices } = useAppContext();
+
+  // Use a ref to store the latest prices
+  const pricesRef = useRef<Record<string, IPriceData>>({});
 
   useEffect(() => {
-    const symbols = spotMarketData.map((s) => s.symbol.toLowerCase());
+    if (futureMarketData.length === 0) return;
+
+    const symbols = futureMarketData.map((s) => s.symbol.toLowerCase());
     const streams = symbols.map((s) => `${s}@ticker`).join("/");
 
     // Create WebSocket connection
     const ws = new WebSocket(
-      // `wss://stream.binance.com:9443/stream?streams=${streams}`
       `wss://fstream.binance.com/stream?streams=${streams}`
     );
 
@@ -28,27 +32,31 @@ export function useFutureWebSocket() {
       const message = JSON.parse(event.data);
 
       if (message.data) {
-        const { s: symbol, c: currentPrice, E: timestamp } = message.data;
+        const {
+          s: symbol,
+          c: currentPrice,
+          P: priceChangePercent,
+          E: timestamp,
+        } = message.data;
+        const upperSymbol = symbol.toUpperCase();
 
-        setPrices((prev) => {
-          const previousPrice = parseFloat(prev[symbol]?.price || "0");
-          const newPrice = parseFloat(currentPrice);
+        const previousPrice = parseFloat(
+          pricesRef.current[upperSymbol]?.price || "0"
+        );
+        const newPrice = parseFloat(currentPrice);
 
-          return {
-            ...prev,
-            [symbol]: {
-              symbol: symbol.toUpperCase(),
-              price: currentPrice,
-              direction:
-                newPrice > previousPrice
-                  ? "up"
-                  : newPrice < previousPrice
-                  ? "down"
-                  : "none",
-              lastUpdated: timestamp,
-            },
-          };
-        });
+        pricesRef.current[upperSymbol] = {
+          symbol: upperSymbol,
+          price: currentPrice,
+          priceChangePercent: priceChangePercent,
+          direction:
+            newPrice > previousPrice
+              ? "up"
+              : newPrice < previousPrice
+              ? "down"
+              : "none",
+          lastUpdated: timestamp,
+        };
       }
     };
 
@@ -62,17 +70,21 @@ export function useFutureWebSocket() {
       console.log("WebSocket closed");
     };
 
+    // Update state and context periodically
+    const interval = setInterval(() => {
+      const newPrices = { ...pricesRef.current };
+      setPrices(newPrices);
+      setFutureMarketPrices(newPrices);
+    }, 1000);
+
     // Cleanup on component unmount
     return () => {
+      clearInterval(interval);
       if (ws.readyState === WebSocket.OPEN) {
         ws.close();
       }
     };
-  }, [spotMarketData]);
-
-  useEffect(() => {
-    setSpotMarketPrices(prices);
-  }, [prices]);
+  }, [futureMarketData, setFutureMarketPrices]);
 
   return { prices, status };
 }

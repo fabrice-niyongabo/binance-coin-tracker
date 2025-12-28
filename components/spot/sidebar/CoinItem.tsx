@@ -1,23 +1,21 @@
 import { useAppContext } from "@/context";
-import { splitSymbol } from "@/lib/utils";
-import { IMarketData, ISpotMarketData } from "@/types/market";
+import { IPriceData, ISpotMarketData } from "@/types/market";
 import {
   binanceCryptoIcons,
   binanceEtfIcons,
   binanceCurrencyIcons,
 } from "binance-icons";
 import Image from "next/image";
+import { memo } from "react";
 
 interface IProps {
   coin: ISpotMarketData;
+  priceData?: IPriceData;
+  isSelected: boolean;
 }
 
-function CoinItem({ coin }: IProps) {
-  const {
-    setSelectedSpotMarketData,
-    selectedSpotMarketData,
-    spotMarketPrices,
-  } = useAppContext();
+function CoinItem({ coin, priceData, isSelected }: IProps) {
+  const { setSelectedSpotMarketData } = useAppContext();
 
   const handleClick = () => {
     setSelectedSpotMarketData(coin);
@@ -33,7 +31,7 @@ function CoinItem({ coin }: IProps) {
     <div
       className={[
         "flex items-center justify-between gap-2 py-2 px-5 hover:bg-yellow-900 transition-all duration-800 hover:cursor-pointer",
-        selectedSpotMarketData?.symbol === coin.symbol ? "bg-yellow-900" : "",
+        isSelected ? "bg-yellow-900" : "",
       ].join(" ")}
       onClick={() => handleClick()}
     >
@@ -86,24 +84,31 @@ function CoinItem({ coin }: IProps) {
       <p className="text-white text-sm flex-1">
         {coin.baseAsset}/{coin.quoteAsset}
       </p>
-      <p
-        className={[
-          "text-gray-500",
-          spotMarketPrices[coin.symbol]?.direction === "up"
-            ? "text-green-500"
-            : "",
-          spotMarketPrices[coin.symbol]?.direction === "down"
-            ? "text-red-500"
-            : "",
-          spotMarketPrices[coin.symbol]?.direction === "none"
-            ? "text-red-400"
-            : "",
-        ].join(" ")}
-      >
-        {spotMarketPrices[coin.symbol]?.price || 0}
-      </p>
+      <div className="flex flex-col items-end">
+        <p
+            className={[
+            "text-gray-500",
+            priceData?.direction === "up"
+                ? "text-green-500"
+                : "",
+            priceData?.direction === "down"
+                ? "text-red-500"
+                : "",
+            priceData?.direction === "none"
+                ? "text-red-400"
+                : "",
+            ].join(" ")}
+        >
+            {priceData?.price || 0}
+        </p>
+        {priceData?.priceChangePercent && (
+            <p className={`text-[10px] ${parseFloat(priceData.priceChangePercent) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                {parseFloat(priceData.priceChangePercent).toFixed(2)}%
+            </p>
+        )}
+      </div>
     </div>
   );
 }
 
-export default CoinItem;
+export default memo(CoinItem);
