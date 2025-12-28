@@ -34,7 +34,7 @@ function CoinList(props: IProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex gap-4 px-2 text-xs text-gray-400 mb-2 border-b border-gray-700 pb-2">
-        <button
+        {/* <button
           className={`hover:text-white transition-colors ${
             sortBy === "name"
               ? "text-white font-bold border-b-2 border-blue-500"
@@ -43,7 +43,7 @@ function CoinList(props: IProps) {
           onClick={() => setSortBy("name")}
         >
           Name
-        </button>
+        </button> */}
         <button
           className={`hover:text-white transition-colors ${
             sortBy === "gainer"

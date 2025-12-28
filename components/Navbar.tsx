@@ -6,9 +6,9 @@ function Navbar() {
   const pathname = usePathname();
   return (
     <div className="bg-gray-900 p-5 text-white flex items-center justify-between gap-10">
-      <h3>Coin Tracker</h3>
+      <h3>Coin Tracker - 24 Change</h3>
       <div className="flex items-center justify-center gap-5">
-        <Link
+        <a
           href="/"
           className={[
             "hover:text-yellow-500 active:text-yellow-500",
@@ -16,8 +16,8 @@ function Navbar() {
           ].join(" ")}
         >
           Sport Market
-        </Link>
-        <Link
+        </a>
+        <a
           href="/futures"
           className={[
             "hover:text-yellow-500 active:text-yellow-500",
@@ -25,7 +25,7 @@ function Navbar() {
           ].join(" ")}
         >
           USD M Futures
-        </Link>
+        </a>
       </div>
     </div>
   );
