@@ -1,15 +1,17 @@
 "use client";
 
 import { useAppContext } from "@/context";
-import { IMarketData, ISpotMarketData } from "@/types/market";
+import { IMarketData, IPriceData, ISpotMarketData } from "@/types/market";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import CoinList from "./CoinList";
 import Paginator from "../../paginator";
 import { splitSymbol } from "@/lib/utils";
+import { FutureBinanceTicker } from "@/types/future";
 
 function SideBar() {
-  const { futureMarketData, setFutureMarketData } = useAppContext();
+  const { futureMarketData, setFutureMarketData, setFutureMarketBasePrices } =
+    useAppContext();
 
   const [keyword, setKeword] = useState("");
   const [searchResults, setSearchResults] = useState<ISpotMarketData[]>([]);
@@ -26,8 +28,28 @@ function SideBar() {
   const pageCount = Math.ceil(futureMarketData.length / itemsPerPage);
   const fetchMartetData = async () => {
     try {
+      // base prices
+      const baseRes = await axios.get(
+        "https://fapi.binance.com/fapi/v1/ticker/24hr"
+      );
+      const basePriceAllData: FutureBinanceTicker[] = baseRes.data;
+      const usdBasePriceData: FutureBinanceTicker[] = basePriceAllData.filter(
+        (item) => item.symbol.includes("USDT")
+      );
+      const basePrices: Record<string, IPriceData> = {};
+      for (const price of usdBasePriceData) {
+        basePrices[price.symbol.toUpperCase()] = {
+          symbol: price.symbol.toUpperCase(),
+          price: price.lastPrice,
+          priceChangePercent: price.priceChangePercent,
+          direction: "none",
+          lastUpdated: price.closeTime,
+        };
+      }
+      setFutureMarketBasePrices(basePrices);
+
+      // exchange info
       const response = await axios.get(
-        // "https://api.binance.com/api/v3/ticker/24hr"
         "https://fapi.binance.com/fapi/v1/exchangeInfo"
       );
       const marketData: ISpotMarketData[] =

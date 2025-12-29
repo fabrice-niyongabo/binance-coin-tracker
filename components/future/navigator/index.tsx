@@ -9,7 +9,7 @@ import {
   binanceCurrencyIcons,
 } from "binance-icons";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PiEmptyBold } from "react-icons/pi";
 
 function Navigator() {
@@ -18,18 +18,43 @@ function Navigator() {
     setSelectedFutureMarketData,
     futureMarketData,
     futureMarketPrices,
+    futureMarketBasePrices,
   } = useAppContext();
 
   const [nextLoading, setNextLoading] = useState(false);
   const [previousLoading, setPreviousLoading] = useState(false);
 
+  const [sortBy, setSortBy] = useState<"name" | "gainer">("gainer");
+
+  const sortedData = useMemo(() => {
+    const data = [...futureMarketData];
+    if (sortBy === "name") {
+      return data.sort((a, b) => a.baseAsset.localeCompare(b.baseAsset));
+    } else {
+      return data.sort((a, b) => {
+        const priceA = futureMarketBasePrices[a.symbol]?.priceChangePercent;
+        const priceB = futureMarketBasePrices[b.symbol]?.priceChangePercent;
+
+        const valA = priceA ? parseFloat(priceA) : -Infinity;
+        const valB = priceB ? parseFloat(priceB) : -Infinity;
+
+        return valB - valA; // Descending
+      });
+    }
+    // }, [props.marketData, prices, sortBy]);
+  }, [futureMarketData, futureMarketBasePrices, sortBy]);
+
   const handleNext = () => {
     if (selectedFutureMarketData) {
       setNextLoading(true);
-      const currentIndex = futureMarketData.findIndex(
+      // const currentIndex = futureMarketData.findIndex(
+      //   (item) => item.symbol === selectedFutureMarketData.symbol
+      // );
+      const currentIndex = sortedData.findIndex(
         (item) => item.symbol === selectedFutureMarketData.symbol
       );
-      const nextCoin = futureMarketData[currentIndex + 1];
+      // const nextCoin = futureMarketData[currentIndex + 1];
+      const nextCoin = sortedData[currentIndex + 1];
       if (!nextCoin) {
         setNextLoading(false);
         return;
@@ -48,10 +73,14 @@ function Navigator() {
   const handlePrevious = () => {
     if (selectedFutureMarketData) {
       setPreviousLoading(true);
-      const currentIndex = futureMarketData.findIndex(
+      // const currentIndex = futureMarketData.findIndex(
+      //   (item) => item.symbol === selectedFutureMarketData.symbol
+      // );
+      const currentIndex = sortedData.findIndex(
         (item) => item.symbol === selectedFutureMarketData.symbol
       );
-      const previousCoin = futureMarketData[currentIndex - 1];
+      // const previousCoin = futureMarketData[currentIndex - 1];
+      const previousCoin = sortedData[currentIndex - 1];
       if (!previousCoin) {
         setPreviousLoading(false);
         return;
